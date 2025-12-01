@@ -11,6 +11,7 @@ export function BottomNav() {
   const [value, setValue] = React.useState(0);
 
   return (
+    // Defalut is xs: 'flex'
     <Box sx={{ width: "100%", position: 'fixed', bottom: 0, left: 0, right: 0 }} display={{ md: 'none' }}>
       <BottomNavigation
         showLabels
