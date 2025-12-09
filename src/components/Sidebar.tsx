@@ -20,6 +20,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ChatIcon from '@mui/icons-material/Chat';
 import GroupIcon from '@mui/icons-material/Group';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 
 
@@ -46,7 +48,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
     },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
+export const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -93,6 +95,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                 props: ({ open }) => open,
                 style: {
                     ...openedMixin(theme),
+                    position: 'relative',
                     '& .MuiDrawer-paper': openedMixin(theme),
                 },
             },
@@ -107,17 +110,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-export function Sidebar() {
+
+interface SidebarProps {
+    open: boolean;
+    toggleDrawer: () => void;
+}
+
+export function Sidebar({ open, toggleDrawer }: SidebarProps) {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
+    const navItems = [
+        { text: 'Chat', icon: <ChatIcon />, href: '/dashboard/chat' },
+        { text: 'Friends', icon: <GroupIcon />, href: '/dashboard/friends' },
+        { text: 'Profile', icon: <AccountCircleIcon />, href: '/dashboard/profile' },
+    ];
+    const pathname = usePathname();
 
     return (
         <Box display={{ xs: 'none', md: 'flex' }}>
@@ -127,7 +134,7 @@ export function Sidebar() {
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
-                        onClick={handleDrawerOpen}
+                        onClick={toggleDrawer}
                         edge="start"
                         sx={[
                             {
@@ -145,15 +152,18 @@ export function Sidebar() {
             </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
+                    <IconButton onClick={toggleDrawer}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Chat', 'Friends', 'Profile'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                    {navItems.map((item, index) => (
+                        <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
+                                component={Link}
+                                href={item.href}
+                                selected={pathname === item.href} // hightlight the selected tab
                                 sx={[
                                     {
                                         minHeight: 48,
@@ -183,16 +193,10 @@ export function Sidebar() {
                                             },
                                     ]}
                                 >
-                                    {index === 0 ? (
-                                        <ChatIcon />
-                                    ) : index === 1 ? (
-                                        <GroupIcon />
-                                    ) : (
-                                        <AccountCircleIcon />
-                                    )}
+                                    {item.icon}
                                 </ListItemIcon>
                                 <ListItemText
-                                    primary={text}
+                                    primary={item.text}
                                     sx={[
                                         open
                                             ? {
@@ -208,14 +212,8 @@ export function Sidebar() {
                     ))}
                 </List>
 
+
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
-                <Typography sx={{ marginBottom: 2 }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et
-                </Typography>
-            </Box>
         </Box>
     );
 }
