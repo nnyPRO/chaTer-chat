@@ -34,7 +34,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
 
             {/* Main recognizes the open state and moves accordingly */}
             <Main open={open}>
-                <DrawerHeader /> {/* Push content down from the AppBar */}
+                <DrawerHeader sx={{ display: { xs: 'none', md: 'flex' } }} /> {/* Push content down from the AppBar for desktop */}
                 {children}
             </Main>
 

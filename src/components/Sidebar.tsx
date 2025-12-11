@@ -162,7 +162,7 @@ export function Sidebar({ open, toggleDrawer }: SidebarProps) {
                             <ListItemButton
                                 component={Link}
                                 href={item.href}
-                                selected={pathname === item.href} // hightlight the selected tab
+                                selected={pathname?.startsWith(item.href)} // hightlight the selected tab
                                 sx={[
                                     {
                                         minHeight: 48,
